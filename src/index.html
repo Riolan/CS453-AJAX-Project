@@ -1,0 +1,57 @@
+<html>
+
+<body>
+
+<h1 id="myHeader"> This is an AJAX example</h1>
+<p> This code describes how to do an AJAX example </p>
+<p id="thispart"> This is the part that is updated </p>
+<p id="thatpart"> It cleverly updates only part of a web page </p>
+
+<form action = "simple_server.php"
+   <p> Enter your name: <input type="text" name="myname" />
+
+   <button type = "button"  onclick = "doAJAXstuff(this.form)">
+    Paint part of the web page
+   </button>
+ </p>
+</form>
+
+
+<script type = "text/javascript">
+
+function doAJAXstuff(theform) {
+  request = new XMLHttpRequest();
+  request.open("GET","simple_server.php?mydata="+theform.myname.value, true);
+
+  request.onreadystatechange = function () {
+     if (request.readyState == 4)
+         my_callback();
+  
+   }
+  request.send();
+
+	document.getElementById("thatpart").style.font = "bold 30px Times New Roman sans-serif";
+
+} 
+
+function my_callback() {
+
+    if (request.status == 200) {
+     
+	document.getElementById("thispart").innerHTML = request.responseText;
+	document.getElementById("thispart").style.font = "italic bold 20px arial, serif";
+        alert("There wasn't an error, just wanted to let you see how an alert works. Received from the server:\n"+request.responseText);
+    }
+    else if (request.status=404) {
+	alert("Server was not found: data returned is :\n"+request.responseText);
+
+    }
+
+}
+
+</script>
+
+
+
+</body>
+</html>
