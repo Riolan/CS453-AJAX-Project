@@ -16,6 +16,9 @@ RUN apt-get install -y php-gd
 RUN apt-get install -y php-mbstring
 RUN apt-get install -y php-mysql
 RUN apt-get install -y php-zip
+### Added for teamwork purposes
+RUN apt-get install -y git
+###
 RUN apt-get clean
 EXPOSE 80
 CMD ["apache2ctl","-D","FOREGROUND"]
