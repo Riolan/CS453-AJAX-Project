@@ -29,12 +29,13 @@ function createBook($title, $bpub, $bed, $dop) {
 
 function createCourse($name, ...$books) {
   $course = array();
-  $course["course"] = $name;
-  $course["students"] = array();
-  $course["books"] = array();
+  //$course["name"] = $name;
+  
+  $course[$name]["students"] = array();
+  $course[$name]["books"] = array();
 
   foreach ($books as $book) {
-    $course["books"] += $book;
+    $course[$name]["books"] += $book;
   }
   
 
@@ -42,27 +43,71 @@ function createCourse($name, ...$books) {
 }
 
 
+// Function to check for duplicate names in the array
+function hasDuplicateName($dataArray, $name) {
+  $hasKey = array_key_exists($name, $dataArray);
+}
+
+// Function to read JSON data from a file
+function readJSONFromFile($filename) {
+  if (file_exists($filename)) {
+      $jsonData = file_get_contents($filename);
+      return $jsonData !== false ? json_decode($jsonData, true) : array();
+  } else {
+      return array(); // Return an empty array if file doesn't exist
+  }
+}
+
+
+function searchJSONFile($filename) {
+  $existingData = readJSONFromFile($filename);
+
+  if ($existingData) {
+    foreach ($existingData as $ed) {
+      if ($key == array_key_first($ed)) {
+        // if in here then we found a matching course
+
+      } 
+    }
+  } else {
+    echo "File is empty.";
+  }
+}
 
 
 function writeJson($data) {
- // $fp = fopen("data.json", 'w+');
+  $existingData = readJSONFromFile("array.json");
 
-  $inp = file_get_contents("array.json");
-  $tempArray = json_decode($inp);
-  //$idk = array($tempArray);
+  $isPresent = false;
 
-  array_push($tempArray, $data);
-  $jsonData = json_encode($tempArray);
-  file_put_contents("array.json", $jsonData);
-//  fclose($fp);
 
+  $key = array_key_first($data);
+
+  if($existingData)  {
+    foreach ($existingData as $ed) {
+      if ($key == array_key_first($ed)) {
+        $isPresent = true;
+      } 
+    }
+  }
+
+
+  array_push($existingData, $data);
+
+  if ($isPresent) {
+    echo "<p>Not adding key, already in there</p>";
+  } else {
+      
+    $jsonData = json_encode($existingData);
+    file_put_contents("array.json", $jsonData);
+  }
 
 }
 
 print "<p>Hi, ! This is new important data for your web page.</p> ";
 
 // get the q parameter from URL
-if (($_GET['instructor'] ?? true)) {
+if (array_key_exists('instructor', $_GET)) {
   $isInstructor = $_GET['instructor'];
   echo $isInstructor;
   // handle instructor
@@ -91,7 +136,31 @@ if (($_GET['instructor'] ?? true)) {
 
 
 } else {
+  
+    $courses = readJSONFromFile("array.json");
 
+    echo "<div class=\"container\"><table class=\"pure-table pure-table-bordered\"> 
+      <thead><tr> 
+        <th> Name </th> 
+        <th> Title </th>  
+        <th> Publisher </th> 
+        <th> Edition </th> 
+        <th> Publish Date </th> 
+        <th> Title </th>  
+        <th> Publisher </th> 
+        <th> Edition </th> 
+        <th> Publish Date </th> 
+      </tr></thead>";
+    foreach ($courses as $course) {
+      $name = array_key_first($course);
+      
+      echo "<tr>  <td> $name </td>";
+      echo "</tr>";
+    }
+  
+  
+    echo "</table></div>";
+  
 
 
 }
