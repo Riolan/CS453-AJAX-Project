@@ -1,57 +1,148 @@
 <html>
-
-<body>
-
-<h1 id="myHeader"> This is an AJAX example</h1>
-<p> This code describes how to do an AJAX example </p>
-<p id="thispart"> This is the part that is updated </p>
-<p id="thatpart"> It cleverly updates only part of a web page </p>
-
-<form action = "simple_server.php"
-   <p> Enter your name: <input type="text" name="myname" />
-
-   <button type = "button"  onclick = "doAJAXstuff(this.form)">
-    Paint part of the web page
-   </button>
- </p>
-</form>
-
-
-<script type = "text/javascript">
-
-function doAJAXstuff(theform) {
-  request = new XMLHttpRequest();
-  request.open("GET","simple_server.php?mydata="+theform.myname.value, true);
-
-  request.onreadystatechange = function () {
-     if (request.readyState == 4)
-         my_callback();
-  
-   }
-  request.send();
-
-	document.getElementById("thatpart").style.font = "bold 30px Times New Roman sans-serif";
-
+<head>
+<link rel="stylesheet"
+    href="https://unpkg.com/purecss@2.0.6/build/pure-min.css"
+    integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5"
+    crossorigin="anonymous"
+    origin="anonymous"
+/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style> 
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
 } 
-
-function my_callback() {
-
-    if (request.status == 200) {
-     
-	document.getElementById("thispart").innerHTML = request.responseText;
-	document.getElementById("thispart").style.font = "italic bold 20px arial, serif";
-        alert("There wasn't an error, just wanted to let you see how an alert works. Received from the server:\n"+request.responseText);
+@media (min-width: 576px) {
+    .container {
+        width: 540px;
     }
-    else if (request.status=404) {
-	alert("Server was not found: data returned is :\n"+request.responseText);
+}
+@media (min-width: 768px) {
+    .container {
+        width: 720px;
+    }
+}
+@media (min-width: 992px) {
+    .container {
+        width: 960px;
+    }
+}
+@media (min-width: 1200px) {
+    .container {
+        width: 1140px;
+    }
+}
+</style>
+<script>
+// function showHint(str) {
+//   if (str.length == 0) {
+//     document.getElementById("txtHint").innerHTML = "";
+//     return;
+//   } else {
+//     var xmlhttp = new XMLHttpRequest();
+//     xmlhttp.onreadystatechange = function() {
+//       if (this.readyState == 4 && this.status == 200) {
+//         document.getElementById("txtHint").innerHTML = this.responseText;
+//       }
+//     };
+//     xmlhttp.open("GET", "simple_server.php?name=" + str, true);
+//     xmlhttp.send();
+//   }
+// }
+function getData() {
+    /*var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("data").innerHTML = this.responseText;
+      }
+    };*/
+    //xmlhttp.open("GET", "simple_server.php?instructor=", true);
+    //xmlhttp.send();
+}
+
+
+function sendStudentData() {
+    var course = document.getElementById('course').value;
+    var name = document.getElementById('name').value;
+    var btitle = document.getElementById('btitle').value;
+    var bpub= document.getElementById('bpub').value;
+    var bed = document.getElementById('bed').value;
+    var dop = document.getElementById('dop').value;
+    // paramaters.
+    var params = "instructor=false?course=" + course + " ?name=" + name + "?title=" + btitle +
+                        "?pub=" + bpub + "?ed=" + bed + "?dop=" + dop;
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("data").innerHTML = this.responseText;
+
+        console.log(this.responseText);
+      }
+    };
+    xmlhttp.open("GET", "simple_server.php", true);
+    xmlhttp.send(params);
+}
+
+function sendInstructorData() {
+    console.log("PLEASE");
+
+    var course = document.getElementById('course').value;
+    var btitle = document.getElementById('btitle').value;
+    var bpub= document.getElementById('bpub').value;
+    var bed = document.getElementById('bed').value;
+    var dop = document.getElementById('dop').value;
+    // paramaters.
+    var params = "?instructor=true" + "&course=" + course +  "&title=" + btitle +
+                        "&pub=" + bpub + "&ed=" + bed + "&dop=" + dop;
+
+    
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "simple_server.php" + params, true);
+
+
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("data").innerHTML = this.responseText;
+        console.log(this.responseText);
 
     }
+    };
+
+    xmlhttp.send();
 
 }
 
 </script>
+</head>
+<body onload=""></body>
 
+<body>
 
+<p><b>Srtart typing a Book stuff in the input field below:</b></p>
+<form action="">
+    <fieldset>
+        
+        <label for="course">Course:</label>
+        <input type="text" id="course" name="course" required></br></label>
+        <label for="btitle">Book Title:</label>
+        <input type="text" id="btitle" name="btitle" required></br>
+        <label for="bpub">Book Publisher:</label>
+        <input type="text" id="bpub" name="bpub" required></br>
+        <label for="bed">Book Edition:</label>
+        <input type="text" id="bed" name="bed" required></br>
+        <label for="dop">Date of Printing:</label>
+        <input type="text" id="dop" name="dop" required></br>
+        
+          </fieldset>
+</form>
+<button onclick="sendInstructorData()" class="pure-button pure-button-primary">Submit</button>
+<p>Suggestions: <span id="data"></span></p>
+
+</br>
 
 </body>
 </html>
