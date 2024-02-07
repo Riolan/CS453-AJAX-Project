@@ -1,18 +1,17 @@
 <?php
 
 
-function addStudentToCourse($name, $title) {
+function createStudent($name, ...$books) {
   // find the course in file
-  $student = array(
-    // Name
-    "books" => array (
+  $student = array();
 
-    )
-  );
-
-  $student["name"] = $name;
-  $student["books"][0]["title"] = $title;
+  $student[$name]["books"] = array();
   
+  foreach ($books as $book) {
+    $student[$name]["books"] += $book;
+  }
+  
+
   return $student;
 }
 
@@ -98,15 +97,15 @@ function writeJson($data) {
     echo "<p>Not adding key, already in there</p>";
   } else {
       
-    $jsonData = json_encode($existingData);
+    $jsonData = json_encode($existingData, JSON_PRETTY_PRINT);
     file_put_contents("array.json", $jsonData);
   }
 
 }
 
-print "<p>Hi, ! This is new important data for your web page.</p> ";
+print "<p>Test to see if data loads.</p> ";
 
-// get the q parameter from URL
+// get the instructor parameter from URL
 if (array_key_exists('instructor', $_GET)) {
   $isInstructor = $_GET['instructor'];
   echo $isInstructor;
@@ -129,19 +128,60 @@ if (array_key_exists('instructor', $_GET)) {
     writeJson($write);
 
   } else {
-    // a student can do what
-    echo "124rdajkfjka";
-    echo "pls";
+    // student can do what
+    $courses = readJSONFromFile("array.json");
+    // See which course the student is being added into
+    $key = $_GET['course'];
+    if ($courses) {
+      foreach ($courses as &$course) {
+        if (isset($course[$key])) {
+
+          $name = $_GET['name'];
+
+          // Check to see if name is alr in the array.
+          $isFound = false;
+          foreach ($course[$key]['students'] as $student_check) {
+            if ($name == key($student_check)) {
+              echo "Name already found...";
+              $isFound = true;
+            }
+          }
+          // if name is not in the array add the student
+          if (!$isFound) {
+            $title = $_GET['title'];
+            $bpub = $_GET['pub'];
+            $bed = $_GET['ed'];
+            $dop = $_GET['dop'];
+  
+            $book = createBook($title, $bpub, $bed, $dop);
+            $student = createStudent($name, $book);
+  
+            // Initialize the students array if it's not already initialized
+            if (!isset($course[$key]['students'])) {
+                $course[$key]['students'] = array();
+            }
+  
+    
+            array_push($course[$key]['students'], $student);
+                  
+            $jsonData = json_encode($courses, JSON_PRETTY_PRINT);
+            file_put_contents("array.json", $jsonData);
+            echo "Added student!";
+          }
+        } 
+      }
+    }
+    
   }
 
 
-} else {
-  
+} else { // instructor variable not found
+    // Used for displaying explixitly from the file
     $courses = readJSONFromFile("array.json");
 
     echo "<div class=\"container\"><table class=\"pure-table pure-table-bordered\"> 
       <thead><tr> 
-        <th> Name </th> 
+        <th> Course Name </th> 
         <th> Title </th>  
         <th> Publisher </th> 
         <th> Edition </th> 
@@ -154,8 +194,19 @@ if (array_key_exists('instructor', $_GET)) {
     foreach ($courses as $course) {
       $name = array_key_first($course);
       
+
+
       echo "<tr>  <td> $name </td>";
+
       echo "</tr>";
+
+      echo "<tr><td colspan=9 style='background-color:#DCDCDC'>Students: ";
+
+      foreach ($course[$name]['students'] as $student) {
+        echo (key($student));
+        echo ", ";
+      }
+      echo "</td></tr>";
     }
   
   

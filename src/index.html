@@ -40,54 +40,34 @@
 }
 </style>
 <script>
-// function showHint(str) {
-//   if (str.length == 0) {
-//     document.getElementById("txtHint").innerHTML = "";
-//     return;
-//   } else {
-//     var xmlhttp = new XMLHttpRequest();
-//     xmlhttp.onreadystatechange = function() {
-//       if (this.readyState == 4 && this.status == 200) {
-//         document.getElementById("txtHint").innerHTML = this.responseText;
-//       }
-//     };
-//     xmlhttp.open("GET", "simple_server.php?name=" + str, true);
-//     xmlhttp.send();
-//   }
-// }
-function getData() {
-    /*var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("data").innerHTML = this.responseText;
-      }
-    };*/
-    //xmlhttp.open("GET", "simple_server.php?instructor=", true);
-    //xmlhttp.send();
-}
-
 
 function sendStudentData() {
-    var course = document.getElementById('course').value;
-    var name = document.getElementById('name').value;
-    var btitle = document.getElementById('btitle').value;
-    var bpub= document.getElementById('bpub').value;
-    var bed = document.getElementById('bed').value;
-    var dop = document.getElementById('dop').value;
+    console.log("student btn clicked");
+    var course = document.getElementById('course1').value;
+    var name = document.getElementById('name1').value;
+    var btitle = document.getElementById('btitle1').value;
+    var bpub= document.getElementById('bpub1').value;
+    var bed = document.getElementById('bed1').value;
+    var dop = document.getElementById('dop1').value;
     // paramaters.
-    var params = "instructor=false?course=" + course + " ?name=" + name + "?title=" + btitle +
-                        "?pub=" + bpub + "?ed=" + bed + "?dop=" + dop;
+    var params = "?instructor=false&course=" + course + "&name=" + name + "&title=" + btitle +
+                        "&pub=" + bpub + "&ed=" + bed + "&dop=" + dop;
 
+    
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("data").innerHTML = this.responseText;
+    xmlhttp.open("GET", "simple_server.php" + params, true);
 
+
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("data2").innerHTML = this.responseText;
         console.log(this.responseText);
-      }
+
+    }
     };
-    xmlhttp.open("GET", "simple_server.php", true);
-    xmlhttp.send(params);
+
+    xmlhttp.send();
+
 }
 
 function refreshData() {
@@ -191,17 +171,19 @@ function sendInstructorData() {
     <div class="pure-u-1-2">
     <p2>>Student Form:</p2>
     <fieldset>
-        <label for="course">Course:</label>
-        <input type="text" id="course" name="course" required></br></label>
-        <label for="btitle">Book Title:</label>
-        <input type="text" id="btitle" name="btitle" required></br>
-        <label for="bpub">Book Publisher:</label>
-        <input type="text" id="bpub" name="bpub" required></br>
-        <label for="bed">Book Edition:</label>
-        <input type="text" id="bed" name="bed" required></br>
-        <label for="dop">Date of Printing:</label>
-        <input type="text" id="dop" name="dop" required></br>
-        <button onclick="" class="pure-button pure-button-primary">Submit</button>
+        <label for="name1">Name:</label>
+        <input type="text" id="name1" name="name" required></br></label>
+        <label for="course1">Course:</label>
+        <input type="text" id="course1" name="course" required></br></label>
+        <label for="btitle1">Book Title:</label>
+        <input type="text" id="btitle1" name="btitle" required></br>
+        <label for="bpub1">Book Publisher:</label>
+        <input type="text" id="bpub1" name="bpub" required></br>
+        <label for="bed1">Book Edition:</label>
+        <input type="text" id="bed1" name="bed" required></br>
+        <label for="dop1">Date of Printing:</label>
+        <input type="text" id="dop1" name="dop" required></br>
+        <button onclick="sendStudentData()" class="pure-button pure-button-primary">Submit</button>
     </fieldset>
     </div> 
 <div class="pure-u-1-2">
