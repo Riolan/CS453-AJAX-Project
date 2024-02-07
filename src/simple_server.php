@@ -34,7 +34,7 @@ function createCourse($name, ...$books) {
   $course[$name]["books"] = array();
 
   foreach ($books as $book) {
-    $course[$name]["books"] += $book;
+    array_push($course[$name]["books"], $book);    
   }
   
 
@@ -118,12 +118,33 @@ if (array_key_exists('instructor', $_GET)) {
     $bed = $_GET['ed'];
     $dop = $_GET['dop'];
 
+
     $book = createBook($title, $bpub, $bed, $dop);
+
+    // making assumption if title2 exists the rest does
+    // should actually validate in prod
+    if (array_key_exists('title2', $_GET)) {
+
+      echo "tesing";
+      $title2 = $_GET['title2'];
+      $bpub2 = $_GET['pub2'];
+      $bed2 = $_GET['ed2'];
+      $dop2 = $_GET['dop2'];
+      $books = array();
+      $book2 = createBook($title2, $bpub2, $bed2, $dop2);
+
+      array_push($books, $book, $book2);
+
+    } else {
+      array_push($books, $books);
+
+    }
+
 
     // search course
     // if found course write to it
+    $write = createCourse($course, $books);
 
-    $write = createCourse($course, $book);
     // if no course found make new one
     writeJson($write);
 
