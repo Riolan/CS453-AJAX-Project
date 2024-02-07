@@ -118,6 +118,7 @@ if (array_key_exists('instructor', $_GET)) {
     $bed = $_GET['ed'];
     $dop = $_GET['dop'];
 
+    $books = array();
 
     $book = createBook($title, $bpub, $bed, $dop);
 
@@ -130,13 +131,12 @@ if (array_key_exists('instructor', $_GET)) {
       $bpub2 = $_GET['pub2'];
       $bed2 = $_GET['ed2'];
       $dop2 = $_GET['dop2'];
-      $books = array();
       $book2 = createBook($title2, $bpub2, $bed2, $dop2);
 
       array_push($books, $book, $book2);
 
     } else {
-      array_push($books, $books);
+      array_push($books, $book);
 
     }
 
