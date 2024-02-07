@@ -8,7 +8,8 @@ function createStudent($name, ...$books) {
   $student[$name]["books"] = array();
   
   foreach ($books as $book) {
-    $student[$name]["books"] += $book;
+    //$student[$name]["books"] += $book;
+    array_push($student[$name]["books"], $book); 
   }
   
 
@@ -133,17 +134,19 @@ if (array_key_exists('instructor', $_GET)) {
       $dop2 = $_GET['dop2'];
       $book2 = createBook($title2, $bpub2, $bed2, $dop2);
 
-      array_push($books, $book, $book2);
+      //array_push($books, $book, $book2);
+      $write = createCourse($course, $book, $book2);
 
     } else {
-      array_push($books, $book);
+      //array_push($books, $book);
+      $write = createCourse($course, $book);
 
     }
 
 
     // search course
     // if found course write to it
-    $write = createCourse($course, $books);
+    //$write = createCourse($course, $books);
 
     // if no course found make new one
     writeJson($write);
@@ -152,12 +155,12 @@ if (array_key_exists('instructor', $_GET)) {
     // student can do what
     $courses = readJSONFromFile("array.json");
     // See which course the student is being added into
-    $key = $_GET['course'];
+    $key = $_GET['course1'];
     if ($courses) {
       foreach ($courses as &$course) {
         if (isset($course[$key])) {
 
-          $name = $_GET['name'];
+          $name = $_GET['name1'];
 
           // Check to see if name is alr in the array.
           $isFound = false;
@@ -169,13 +172,32 @@ if (array_key_exists('instructor', $_GET)) {
           }
           // if name is not in the array add the student
           if (!$isFound) {
-            $title = $_GET['title'];
-            $bpub = $_GET['pub'];
-            $bed = $_GET['ed'];
-            $dop = $_GET['dop'];
+            $title = $_GET['title1'];
+            $bpub = $_GET['pub1'];
+            $bed = $_GET['ed1'];
+            $dop = $_GET['dop1'];
   
             $book = createBook($title, $bpub, $bed, $dop);
-            $student = createStudent($name, $book);
+
+            // making assumption if title2 exists the rest does
+            // should actually validate in prod
+            if (array_key_exists('title3', $_GET)) {
+
+              echo "tesing";
+              $title3 = $_GET['title3'];
+              $bpub3 = $_GET['pub3'];
+              $bed3 = $_GET['ed3'];
+              $dop3 = $_GET['dop3'];
+              $book2 = createBook($title3, $bpub3, $bed3, $dop3);
+
+              $student = createStudent($name, $book, $book2);
+
+            } else {
+              $student = createStudent($name, $book);
+
+            }
+
+            //$student = createStudent($name, $book);
   
             // Initialize the students array if it's not already initialized
             if (!isset($course[$key]['students'])) {
@@ -214,10 +236,25 @@ if (array_key_exists('instructor', $_GET)) {
       </tr></thead>";
     foreach ($courses as $course) {
       $name = array_key_first($course);
-      
-
+      $books = $course[$name]["books"];
 
       echo "<tr>  <td> $name </td>";
+
+      foreach ($books as $book) {
+        
+        $title = $book['title'];
+        echo "<td> $title </td>";
+        
+        $pub = $book['bpub'];
+        echo "<td> $pub </td>";
+
+        $bed = $book['bed'];
+        echo "<td> $bed </td>";
+
+        $dop = $book['dop'];
+        echo "<td> $dop </td>";
+
+      }
 
       echo "</tr>";
 
