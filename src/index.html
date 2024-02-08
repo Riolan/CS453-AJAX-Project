@@ -93,18 +93,6 @@ function sendStudentData() {
 
     console.log(params);
 
-/*
-    var course = document.getElementById('course1').value;
-    var name = document.getElementById('name1').value;
-    var btitle = document.getElementById('btitle1').value;
-    var bpub= document.getElementById('bpub1').value;
-    var bed = document.getElementById('bed1').value;
-    var dop = document.getElementById('dop1').value;
-    // paramaters.
-    var params = "?instructor=false&course=" + course + "&name=" + name + "&title=" + btitle +
-                        "&pub=" + bpub + "&ed=" + bed + "&dop=" + dop;
-*/
-
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", "simple_server.php" + params, true);
 
@@ -118,8 +106,141 @@ function sendStudentData() {
     };
 
     xmlhttp.send();
+    refreshData();
+}
+
+function sendInstructorUpdateData() {
+    var formName = 'instructor-update'; 
+    var inputIds = getInputIdsByDivInForm(formName, "required");
+    console.log('Input element IDs for form ' + formName + ':', inputIds);
+
+    inputIds.forEach(function(inputId) {
+        if (hasValue(inputId)) {
+            console.log('Input with ID ' + inputId + ' has a value');
+        } else {
+            
+            console.log('Input with ID ' + inputId + ' does not have a value');
+        }
+    });
+
+    var optionalInputIds = getInputIdsByDivInForm(formName, "optional");
+
+    var sum = 0;
+    optionalInputIds.forEach(function(id) {
+        if (hasValue(id)) {
+            sum+=1;
+        }
+    });
+    console.log(optionalInputIds.length, sum);
+
+    var has2Books = false;
+    if (sum == optionalInputIds.length) {
+        has2Books = true;
+    } else if (sum == 0) {
+        has2Books = false;
+    } else {
+        // error
+
+        alert("Incomplete filling out of the 2nd Book");
+
+        return;
+    }
+
+    var params = "?update=course";
+    inputIds.forEach(function(id) {
+        params += "&" + id +  "=" + document.getElementById(id).value;
+    });
+
+    if (has2Books) {
+        optionalInputIds.forEach(function(id) {
+            params += "&" + id +  "=" + document.getElementById(id).value;
+        }); 
+    }
+
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "simple_server.php" + params, true);
+
+
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("data4").innerHTML = this.responseText;
+        console.log(this.responseText);
+
+    }
+    };
+
+    xmlhttp.send();
+    refreshData();
 
 }
+
+function sendStudentUpdateData() {
+    var formName = 'student-update'; 
+    var inputIds = getInputIdsByDivInForm(formName, "required");
+    console.log('Input element IDs for form ' + formName + ':', inputIds);
+
+    inputIds.forEach(function(inputId) {
+        if (hasValue(inputId)) {
+            console.log('Input with ID ' + inputId + ' has a value');
+        } else {
+            
+            console.log('Input with ID ' + inputId + ' does not have a value');
+        }
+    });
+
+    var optionalInputIds = getInputIdsByDivInForm(formName, "optional");
+
+    var sum = 0;
+    optionalInputIds.forEach(function(id) {
+        if (hasValue(id)) {
+            sum+=1;
+        }
+    });
+    console.log(optionalInputIds.length, sum);
+
+    var has2Books = false;
+    if (sum == optionalInputIds.length) {
+        has2Books = true;
+    } else if (sum == 0) {
+        has2Books = false;
+    } else {
+        // error
+
+        alert("Incomplete filling out of the 2nd Book");
+
+        return;
+    }
+
+    var params = "?update=student";
+    inputIds.forEach(function(id) {
+        params += "&" + id +  "=" + document.getElementById(id).value;
+    });
+
+    if (has2Books) {
+        optionalInputIds.forEach(function(id) {
+            params += "&" + id +  "=" + document.getElementById(id).value;
+        }); 
+    }
+
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "simple_server.php" + params, true);
+
+
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("data5").innerHTML = this.responseText;
+        console.log(this.responseText);
+
+    }
+    };
+
+    xmlhttp.send();
+    refreshData();
+
+}
+
 
 function refreshData() {
     console.log("DATA");
@@ -245,62 +366,137 @@ function sendInstructorData() {
     };
 
     xmlhttp.send();
+    refreshData();
+
 
 }
 
 </script>
 </head>
-<body onload=""></body>
+<body onload="refreshData()"></body>
 
 <body>
 
-    <h1>Course Viewer and Adder</h1>
+    <h1 style="text-align: center;">Project #1/Fake Database</h1>
+    <h2 style="text-align: center;">SP24 CS435-01</h2>
+    <h3 style="text-align: center;">Rio and Logan</h3>
 
 </br>
+
+</br>
+
+
+<hr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <div class="pure-g">
-        <div class="pure-u-1-2">
-        <p2>>Instructor Form:</p2>
-        <form name="instructor" onsubmit="return false">
-        <fieldset>
-            
-            <div class="pure-g">
-                <div class="pure-u-10-24" id="required">
-                    <label for="course">Course:</label>
-                    <input type="text" id="course" name="course" required></br></label>
-                    <label for="title">Book Title:</label>
-                    <input type="text" id="title" name="title" required></br>
-                    <label for="pub">Book Publisher:</label>
-                    <input type="text" id="pub" name="pub" required></br>
-                    <label for="ed">Book Edition:</label>
-                    <input type="text" id="ed" name="ed" required></br>
-                    <label for="dop">Date of Printing:</label>
-                    <input type="text" id="dop" name="dop" required></br>
-                </div>
-                <div class="pure-u-10-24" id="optional">
-                    <label for="title2">Book Title:</label>
-                    <input type="text" id="title2" name="title2" ></br>
-                    <label for="pub2">Book Publisher:</label>
-                    <input type="text" id="pub2" name="pub2" ></br>
-                    <label for="bed2">Book Edition:</label>
-                    <input type="text" id="ed2" name="ed2" ></br>
-                    <label for="dop2">Date of Printing:</label>
-                    <input type="text" id="dop2" name="dop2" ></br>
-                </div>
-            </div>
-            </br>
-            </form>
-            <button onclick="sendInstructorData()" class="pure-button pure-button-primary">Submit</button>
-        </fieldset>
-        </div> 
     <div class="pure-u-1-2">
-    <p><span id="data"></span></p>
-    </div>
+        
+<div class="pure-g">
+    <div class="pure-u-1-2">
+    <p2>>Instructor Form:</p2>
+    <form name="instructor" onsubmit="return false">
+    <fieldset>
+        
+        <div class="pure-g">
+            <div class="pure-u-10-24" id="required">
+                <label for="course">Course:</label>
+                <input type="text" id="course" name="course" required></br></label>
+                <label for="title">Book Title:</label>
+                <input type="text" id="title" name="title" required></br>
+                <label for="pub">Book Publisher:</label>
+                <input type="text" id="pub" name="pub" required></br>
+                <label for="ed">Book Edition:</label>
+                <input type="text" id="ed" name="ed" required></br>
+                <label for="dop">Date of Printing:</label>
+                <input type="text" id="dop" name="dop" required></br>
+            </div>
+            <div class="pure-u-10-24" id="optional">
+                <label for="title2">Book Title:</label>
+                <input type="text" id="title2" name="title2" ></br>
+                <label for="pub2">Book Publisher:</label>
+                <input type="text" id="pub2" name="pub2" ></br>
+                <label for="bed2">Book Edition:</label>
+                <input type="text" id="ed2" name="ed2" ></br>
+                <label for="dop2">Date of Printing:</label>
+                <input type="text" id="dop2" name="dop2" ></br>
+            </div>
+        </div>
+        </br>
+        </form>
+        <button onclick="sendInstructorData()" class="pure-button pure-button-primary">Submit</button>
+    </fieldset>
+    </div> 
+<div class="pure-u-1-2">
+<p><span id="data"></span></p>
+</div>
 </div>
 
-</br>
+    </div>
+    <div class="pure-u-1-2">
+        
+<div class="pure-g">
+    <div class="pure-u-1-2">
+    <p2>>Instructor Update Form:</p2>
+    <form name="instructor-update" onsubmit="return false">
+    <fieldset>
+        
+        <div class="pure-g">
+            <div class="pure-u-10-24" id="required">
+                <label for="oldcourse">Old Course:</label>
+                <input type="text" id="oldcourse" name="oldcourse" required></br></label>
+                <hr>
+                <label for="course4">Course:</label>
+                <input type="text" id="course4" name="course4" required></br></label>
+                <label for="title4">Book Title:</label>
+                <input type="text" id="title4" name="title4" required></br>
+                <label for="pub4">Book Publisher:</label>
+                <input type="text" id="pub4" name="pub4" required></br>
+                <label for="ed4">Book Edition:</label>
+                <input type="text" id="ed4" name="ed4" required></br>
+                <label for="dop4">Date of Printing:</label>
+                <input type="text" id="dop4" name="dop4" required></br>
+            </div>
+            <div class="pure-u-10-24" id="optional">
+                <label for="title5">Book Title:</label>
+                <input type="text" id="title5" name="title5" ></br>
+                <label for="pub5">Book Publisher:</label>
+                <input type="text" id="pub5" name="pub5" ></br>
+                <label for="ed5">Book Edition:</label>
+                <input type="text" id="ed5" name="ed5" ></br>
+                <label for="dop5">Date of Printing:</label>
+                <input type="text" id="dop5" name="dop5" ></br>
+            </div>
+        </div>
+        </br>
+        </form>
+        <button onclick="sendInstructorUpdateData()" class="pure-button pure-button-primary">Submit</button>
+    </fieldset>
+    </div> 
+<div class="pure-u-1-2">
+<p><span id="data4"></span></p>
+</div>
+</div>
 
 
+    </div>
+    <div class="pure-u-1-2">
+        
 <div class="pure-g">
     <div class="pure-u-1-2">
         <p2>>Student Form:</p2>
@@ -343,12 +539,72 @@ function sendInstructorData() {
     </div>
 </div>
 
-</br>
-<div>
-    <p2>>Data:</p2></br>
-    <button onclick="refreshData()" class="pure-button pure-button-primary">Refresh</button>
-    <p><span id="data3"></span></p>
+    </div>
+    <div class="pure-u-1-2">
+        
 
+
+<div class="pure-g">
+    <div class="pure-u-1-2">
+        <p2>>Student Update Form:</p2>
+        <form name="student-update" onsubmit="return false">
+        <fieldset>
+            
+            <div class="pure-g">
+                <div class="pure-u-10-24" id="required">
+                    <label for="course6">Course:</label>
+                    <input type="text" id="course6" name="course6" required></br></label>
+
+                    <label for="newname6">New Name:</label>
+                    <input type="text" id="newname6" name="newname6" required></br></label>
+
+                    <label for="name6">Old Name:</label>
+                    <input type="text" id="name6" name="name6" required></br></label>
+                    
+                    <label for="title6">Book Title:</label>
+                    <input type="text" id="title6" name="title6" required></br>
+                    <label for="pub6">Book Publisher:</label>
+                    <input type="text1" id="pub6" name="pub6" required></br>
+                    <label for="ed6">Book Edition:</label>
+                    <input type="text1" id="ed6" name="ed6" required></br>
+                    <label for="dop6">Date of Printing:</label>
+                    <input type="text" id="dop6" name="dop6" required></br>
+                </div>
+                <div class="pure-u-10-24" id="optional">
+                    <label for="title7">Book Title:</label>
+                    <input type="text" id="title7" name="title7" ></br>
+                    <label for="pub7">Book Publisher:</label>
+                    <input type="text" id="pub7" name="pub7" ></br>
+                    <label for="ed7">Book Edition:</label>
+                    <input type="text" id="ed7" name="ed7" ></br>
+                    <label for="dop7">Date of Printing:</label>
+                    <input type="text" id="dop7" name="dop7" ></br>
+                </div>
+            </div>
+            </br>
+            </form>
+            <button onclick="sendStudentUpdateData()" class="pure-button pure-button-primary">Submit</button>
+        </fieldset>
+        </div> 
+    <div class="pure-u-1-2">
+    <p><span id="data5"></span></p>
+    </div>
+</div>
+
+
+    </div>
+</div>
+
+
+
+
+
+<div style="float: left;" class="container">
+    <div class="">
+        <p2>>Data:</p2></br>
+        <button onclick="refreshData()" class="pure-button pure-button-primary">Refresh</button>
+        <p><span id="data3"></span></p>
+    </div>
 </div>
 
 
