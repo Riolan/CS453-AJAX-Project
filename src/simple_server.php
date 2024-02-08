@@ -75,16 +75,16 @@ function compareBooks($book1, $book2) {
 
   // Compare book properties
   if ($book1['title'] !== $book2['title']) {
-      $differences[] = 'title';
+      $differences[] = 'Title';
   }
   if ($book1['bpub'] !== $book2['bpub']) {
-      $differences[] = 'bpub';
+      $differences[] = 'Book Publisher';
   }
   if ($book1['bed'] !== $book2['bed']) {
-      $differences[] = 'bed';
+      $differences[] = 'Book Edition';
   }
   if ($book1['dop'] !== $book2['dop']) {
-      $differences[] = 'dop';
+      $differences[] = 'Date of Printing';
   }
 
   return $differences;
