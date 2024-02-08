@@ -140,7 +140,6 @@ if (array_key_exists('instructor', $_GET)) {
     // should actually validate in prod
     if (array_key_exists('title2', $_GET)) {
 
-      echo "tesing";
       $title2 = $_GET['title2'];
       $bpub2 = $_GET['pub2'];
       $bed2 = $_GET['ed2'];
@@ -256,66 +255,153 @@ if (array_key_exists('instructor', $_GET)) {
 
 } else { // instructor variable not found
 
-    if (array_key_exists('instructor', $_GET)) {
-      
-    }
-    // Used for displaying explixitly from the file
-    $courses = readJSONFromFile("array.json");
+    if (array_key_exists('update', $_GET)) {      
+      // student can do what
+      $courses = readJSONFromFile("array.json");
+      // See which course the student is being added into
+      $key = $_GET['course1'];
+      if ($courses) {
+        foreach ($courses as &$course) {
+          if (isset($course[$key])) {
 
-    echo "<div class=\"container\"><table class=\"pure-table pure-table-bordered\"> 
-      <thead><tr> 
-        <th> Course Name </th> 
-        <th> Title </th>  
-        <th> Publisher </th> 
-        <th> Edition </th> 
-        <th> Publish Date </th> 
-        <th> Title </th>  
-        <th> Publisher </th> 
-        <th> Edition </th> 
-        <th> Publish Date </th> 
-      </tr></thead>";
-    foreach ($courses as $course) {
-      $name = array_key_first($course);
-      $books = $course[$name]["books"];
+            $name = $_GET['name1'];
 
-      echo "<tr>  <td> $name </td>";
+            // Check to see if name is alr in the array.
+            $isFound = false;
+            foreach ($course[$key]['students'] as $student_check) {
+              if ($name == key($student_check)) {
+                echo "<div class='container'>";
+                echo "Student's name is already present.";
+                echo "</div>";
+                $isFound = true;
+              }
+            }
+            // if name is not in the array add the student
+            if ($isFound) {
+              $title = $_GET['title1'];
+              $bpub = $_GET['pub1'];
+              $bed = $_GET['ed1'];
+              $dop = $_GET['dop1'];
+    
+              $book = createBook($title, $bpub, $bed, $dop);
 
-      foreach ($books as $book) {
+              // making assumption if title2 exists the rest does
+              // should actually validate in prod
+              if (array_key_exists('title3', $_GET)) {
+                $title3 = $_GET['title3'];
+                $bpub3 = $_GET['pub3'];
+                $bed3 = $_GET['ed3'];
+                $dop3 = $_GET['dop3'];
+                $book2 = createBook($title3, $bpub3, $bed3, $dop3);
+
+                $student = createStudent($name, $book, $book2);
+
+                array_push($student[$name]["flags"], compareBooks($course[$key]["books"][0],
+                  $book));
+                array_push($student[$name]["flags"], compareBooks($course[$key]["books"][1],
+                  $book2));
+              } else {
+                $student = createStudent($name, $book);
+                array_push($student[$name]["flags"], compareBooks($course[$key]["books"][0],
+                  $book));
+              }
+
+          
+              // Initialize the students array if it's not already initialized
+              if (!isset($course[$key]['students'])) {
+                  $course[$key]['students'] = array();
+              }
+    
+              echo "<div class='container'>";
+              $count_books = 0;          
+              foreach ($student[$name]["flags"] as $flag) {
+                $pl = $course[$key]['books'][$count_books]["title"];
+                echo "<p>Student has incorrect book data for: </br><b><pre>  $pl</pre></b></p><ul>";
+                foreach ($flag as $incorrectData) {
+                  echo "<li>The $incorrectData is incorrect.</li>";
+                }
+                $count_books += 1;
+                echo "</ul>";
+              }
+              echo "</div>";
+
+
+
+              array_push($course[$key]['students'], $student);
+                    
+              $jsonData = json_encode($courses, JSON_PRETTY_PRINT);
+              file_put_contents("array.json", $jsonData);
+              date_default_timezone_set("America/Chicago");
+
+              echo "Added student at " . date("h:i:sa");
+
+              
+
+            }
+          } 
+        }
+      }
+    
+    } else {
+      // Used for displaying explixitly from the file
+      $courses = readJSONFromFile("array.json");
+
+      echo "<div class=\"container\"><table class=\"pure-table pure-table-bordered\"> 
+        <thead><tr> 
+          <th> Course Name </th> 
+          <th> Title </th>  
+          <th> Publisher </th> 
+          <th> Edition </th> 
+          <th> Publish Date </th> 
+          <th> Title </th>  
+          <th> Publisher </th> 
+          <th> Edition </th> 
+          <th> Publish Date </th> 
+        </tr></thead>";
+      foreach ($courses as $course) {
+        $name = array_key_first($course);
+        $books = $course[$name]["books"];
+
+        echo "<tr>  <td> $name </td>";
+
+        foreach ($books as $book) {
+          
+          $title = $book['title'];
+          echo "<td> $title </td>";
+          
+          $pub = $book['bpub'];
+          echo "<td> $pub </td>";
+
+          $bed = $book['bed'];
+          echo "<td> $bed </td>";
+
+          $dop = $book['dop'];
+          echo "<td> $dop </td>";
+
+        }
+
+        echo "</tr>";
+
+        echo "<tr><td colspan=9 style='background-color:#DCDCDC'>Students: ";
+
+        foreach ($course[$name]['students'] as $student) {
+
+          echo (key($student));
+          echo ", ";
+        }
+
+
+        echo "</td></tr>";
+
         
-        $title = $book['title'];
-        echo "<td> $title </td>";
-        
-        $pub = $book['bpub'];
-        echo "<td> $pub </td>";
-
-        $bed = $book['bed'];
-        echo "<td> $bed </td>";
-
-        $dop = $book['dop'];
-        echo "<td> $dop </td>";
-
       }
 
-      echo "</tr>";
 
-      echo "<tr><td colspan=9 style='background-color:#DCDCDC'>Students: ";
-
-      foreach ($course[$name]['students'] as $student) {
-
-        echo (key($student));
-        echo ", ";
-      }
+      echo "</table></div>";
 
 
-      echo "</td></tr>";
 
-      
     }
-  
-  
-    echo "</table></div>";
-  
-
-
+    
 }
 ?>
