@@ -1,14 +1,13 @@
 <?php
 
-
+// Function to create a student on JSON file
 function createStudent($name, ...$books) {
   // find the course in file
   $student = array();
-
+  // create an array for student's book(s)
   $student[$name]["books"] = array();
-  
+  // fill in book info
   foreach ($books as $book) {
-    //$student[$name]["books"] += $book;
     array_push($student[$name]["books"], $book); 
   }
   
@@ -16,8 +15,11 @@ function createStudent($name, ...$books) {
   return $student;
 }
 
+// Function to create a book on JSON file
 function createBook($title, $bpub, $bed, $dop) {
+  //create array for the book
   $book = array();
+  // fill in book information
   $book["title"] = $title;
   $book["bpub"] = $bpub;
   $book["bed"] = $bed;
@@ -27,13 +29,15 @@ function createBook($title, $bpub, $bed, $dop) {
   return $book;
 }
 
+// Function to create a course on JSON file
 function createCourse($name, ...$books) {
   $course = array();
-  //$course["name"] = $name;
-  
+
+  //create arrays for students and course book(s)
   $course[$name]["students"] = array();
   $course[$name]["books"] = array();
 
+  // fill in book info
   foreach ($books as $book) {
     array_push($course[$name]["books"], $book);    
   }
@@ -58,7 +62,7 @@ function readJSONFromFile($filename) {
   }
 }
 
-
+// Function to search JSON file for data
 function searchJSONFile($filename) {
   $existingData = readJSONFromFile($filename);
 
@@ -74,12 +78,11 @@ function searchJSONFile($filename) {
   }
 }
 
-
+// function to write info to file if it doesn't exist on file
 function writeJson($data) {
   $existingData = readJSONFromFile("array.json");
 
   $isPresent = false;
-
 
   $key = array_key_first($data);
 
@@ -90,7 +93,6 @@ function writeJson($data) {
       } 
     }
   }
-
 
   array_push($existingData, $data);
 
