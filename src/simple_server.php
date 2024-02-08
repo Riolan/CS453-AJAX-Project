@@ -104,6 +104,8 @@ function writeJson($data) {
         $isPresent = true;
       } 
     }
+  } else {
+    $existingData = array();
   }
 
 
