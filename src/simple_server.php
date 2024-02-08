@@ -1,6 +1,5 @@
 <?php
 
-// Function to create a student on JSON file
 
 function createStudent($name, ...$books) {
   // find the course in file
